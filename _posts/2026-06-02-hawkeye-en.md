@@ -5,7 +5,6 @@ categories: [Reverse Engineering]
 tags: [C#, AutoIt, yara, HawkEye, en]
 ---
 
-[Go To Engilsh Version](./2026-06-02-hawkeye-en.md)
 # Background
 
 As part of extending my work into detection engineering, I worked through the **HawkEye Lab** on CyberDefenders. From the provided packet capture I extracted a malware sample. The scenario describes a victim who opened a phishing email, which caused the malware to be downloaded onto the host.
