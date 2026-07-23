@@ -38,7 +38,8 @@ Delphi 首先會呼叫 InitExe() 進行 unit initialization，遍歷一個 table
 ![VirtualAlloc base + 0x42B7](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_18-06-11.png)
 Loader將跳轉地址寫到 `VirtualAlloc base + 0x42B7`
 ![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_18-06-45.png)
-## Shellcode
+## Shellcode Loader
+### 靜態分析
 Shellcode 使用大量跳躍與 `0x78` 混淆，好在IDA Pro可以成功辨識大部分的function範圍
 首先從入口點一路跳轉到 `0xD94` 後呼叫 `0x1B1C` 初始化 API
 API 列表可以用動態分析解出來，寫成 struct 匯入 IDA 協助分析。還原效果大致長這樣
@@ -53,7 +54,12 @@ API 列表可以用動態分析解出來，寫成 struct 匯入 IDA 協助分析
      → CB5
      → 117 → 3CF0 → 5E7F → 5690
 ```
-反沙箱/Debug功能:
+主流程末尾會對下一段 Payload 進行 RC4 解密，並 Process Hollowing 載入下一段載荷
+![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_22-32-42.png)
+`0x21A9` 檢查完下一段 payload 開頭(為一個執行檔)後進行 Process Hollowing
+![alt text](../assets/img/posts/2026-07-22-ImminentRAT/process_hollowing.png)
+
+### 反沙箱/Debug功能:
 `0x1ABA`: VM driver 檢查
 ![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_21-30-58.png)
 `0x61E4`: username 沙箱檢查
@@ -61,3 +67,10 @@ API 列表可以用動態分析解出來，寫成 struct 匯入 IDA 協助分析
 `0x5D34`: PhysicalDrive0 虛擬機檢查
 ![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_21-22-28.png)
 
+動態分析時，因為 Shellcode 會從初始樣本中提取 Resource，所以要從原樣本開始分析讓 shellcode 解密 resource
+繞開反分析檢查:
+```
+base + 0x910: 修改 EAX 為 0 繞過第一個檢查
+base + 0xCB9: 修改 [esi+2CCh] 為 0 規避 driver 檢測
+base + 0x4874: 修改 [esi+310h] 為 0 規避主流程內的 VM 檢測
+```
