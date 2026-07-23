@@ -70,7 +70,14 @@ API 列表可以用動態分析解出來，寫成 struct 匯入 IDA 協助分析
 動態分析時，因為 Shellcode 會從初始樣本中提取 Resource，所以要從原樣本開始分析讓 shellcode 解密 resource
 繞開反分析檢查:
 ```
-base + 0x910: 修改 EAX 為 0 繞過第一個檢查
+base + 0x9E0: 修改 EAX 為 0 繞過第一個檢查
 base + 0xCB9: 修改 [esi+2CCh] 為 0 規避 driver 檢測
 base + 0x4874: 修改 [esi+310h] 為 0 規避主流程內的 VM 檢測
 ```
+可以讓代碼執行到 `0x34D6` 或 `0x21A9` dump 出下一段 Payload
+大小為 RC4 的argument `[eax+20]`
+![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_23-16-07.png)
+可以看到下一段Payload已被載入到記憶體中
+![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_23-17-30.png)
+
+
