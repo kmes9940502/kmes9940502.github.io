@@ -9,7 +9,7 @@ tags: [Borland Delphi, yara, ImminentRAT, ch]
 # 概要:
 根據 VirusTotal 上的紀錄這支樣本最早在2017年被發現，MalwareBazaar 顯示樣本在2023-12-06被上傳到資料庫
 
-這隻樣本套了好幾層 Loader，並且最終的 Payload 使用了自定義的 Confuser 混淆，篇幅有點長所以會分成兩篇來寫
+這隻樣本套了好幾層 Loader，並且最終的 Payload 使用了自定義的 ConfuserEX 混淆，篇幅有點長所以會分成兩篇來寫
 
 # 深度分析
 ## Road Map
@@ -67,6 +67,7 @@ API 列表可以用動態分析解出來，寫成 struct 匯入 IDA 協助分析
 `0x5D34`: PhysicalDrive0 虛擬機檢查
 ![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_21-22-28.png)
 
+### 動態分析
 動態分析時，因為 Shellcode 會從初始樣本中提取 Resource，所以要從原樣本開始分析讓 shellcode 解密 resource
 繞開反分析檢查:
 ```
@@ -79,5 +80,21 @@ base + 0x4874: 修改 [esi+310h] 為 0 規避主流程內的 VM 檢測
 ![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_23-16-07.png)
 可以看到下一段Payload已被載入到記憶體中
 ![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_23-17-30.png)
+
+dump出來就可以得到下一段執行檔
+
+## Second Payload
+原始 Payload 用一層 UPX 壓縮，依舊是一個 loader，裡面放了三個 payload
+![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_23-40-08.png)
+
+這一層 Loader 相對簡單，取出 resource 中的三個載荷並執行
+
+![alt text](../assets/img/posts/2026-07-22-ImminentRAT/Snipaste_2026-07-22_23-50-28.png)
+
+三個 payload 都是 Borland Delphi 的殼，也就是開頭的 Loader，重複一次步驟再拿到下一段 Payload (依舊有套殼)
+
+## 小結
+這隻樣本一共有三隻 Malware，各種殼層層嵌套，還有自訂義的 ConfuserEX 混淆，分析起來實在有點麻煩。於是如何避免太過深入的分析不必要的部分，節省時間保存精力是個必須持續學習的課題
+
 
 
