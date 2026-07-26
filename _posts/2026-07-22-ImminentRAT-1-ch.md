@@ -2,7 +2,7 @@
 title: "ImminentRAT 分析(上篇)"
 date: 2026-07-22
 categories: [Reverse Engineering]
-tags: [Borland Delphi, yara, ImminentRAT, ch]
+tags: [Borland Delphi, ImminentRAT, ch]
 ---
 
 
