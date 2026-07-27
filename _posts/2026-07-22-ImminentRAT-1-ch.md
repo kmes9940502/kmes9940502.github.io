@@ -1,5 +1,5 @@
 ---
-title: "ImminentRAT 分析(上篇)"
+title: "ImminentRAT 樣本分析(上篇)"
 date: 2026-07-22
 categories: [Reverse Engineering]
 tags: [Borland Delphi, ImminentRAT, ch]
@@ -12,8 +12,7 @@ tags: [Borland Delphi, ImminentRAT, ch]
 這隻樣本套了好幾層 Loader，並且最終的 Payload 使用了自定義的 ConfuserEX 混淆，篇幅有點長所以會分成兩篇來寫
 
 # 深度分析
-## Road Map
-### MD5:
+## MD5:
 原始樣本: 939aa21bbb29c3a09dfd80c155a8a63e
 
 ## Delphi Loader

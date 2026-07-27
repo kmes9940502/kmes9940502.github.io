@@ -13,9 +13,7 @@ The sample is wrapped in several layers of loaders, while the final payload is p
 
 # Deep Analysis
 
-## Roadmap
-
-### MD5
+## MD5
 
 Original sample: `939aa21bbb29c3a09dfd80c155a8a63e`
 
