@@ -35,6 +35,61 @@ Galaxy Logger 會尋找 RuneScape 的視窗特徵、偵測 PIN pad 畫面、啟�
 ![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_02-42-42.png)
 
 若搜尋不到字串也會檢測 Java 的 `SunAwtCanvas`
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_02-48-14.png)
+
+接下來檢測是否在 PIN pad、檢測到畫面就啟用 MouseHook
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_02-50-59.png)
+
+檢測 Pinpad 片段:
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_02-52-07.png)
+Base64 編碼的image解出來長這樣(用來檢測按鈕邊界):
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_02-41-14.png)
+啟用 MouseHook
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_02-56-26.png)
+集滿四張圖片就上傳到C2
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_03-05-15.png)
+這邊見到第一個 C2: `http://uploads[.]im/api?upload`
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_03-06-12.png)
+
+### PWS.bin Loader
+
+Logger 下載了一個名為`PWS.bin`的檔案，寫到`/stext \<tempfile>`中進行process hollowing啟動
+這邊找到第二個 C2: `http://galaxysproducts[.]com/pws/PWS[.]bin`
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_03-17-06.png)
+隨機選擇 `MSBuild`、`InstallUtil`、`RegAsm`做為目標
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_03-21-09.png)
+Process Hollowing的證據
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_03-23-19.png)
+
+啟動後解析許多欄位，推測是用來竊取瀏覽器密碼的功能
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_03-26-12.png)
+
+### 解密
+
+解密 Script 放在 [這裡]()，找個Online C# compiler 就可以跑。
+各類金鑰、C2 indicator都放在 `Token: 0x04000003` 附近
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_04-15-34.png)
+
+解密大量Config
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_04-19-15.png)
+
+解出來的C2 有:
+```
+tony@rixcsgsm[.]com
+smtp.rixcsgsm[.]com
+ftp.host[.]com
+http://galaxysproducts[.]com/testpanel
+```
+
+### 其他 C2
+在 `Token: 0x0600000A` 呼叫另一個 C2 用以查詢受害者的 IPv4 地址
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_04-29-58.png)
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_04-31-01.png)
+
+C2: `http://ip4.telize[.]com/`
 
 
 
+
+# 施工中，放個施工排在這裡
+![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/under_construction.png)

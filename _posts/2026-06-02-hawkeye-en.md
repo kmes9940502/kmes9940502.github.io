@@ -153,7 +153,7 @@ The decrypted `RCDATA`:
 After deserialization we can recover the C2 details:
 
 ```text
-SMTP server: macwinlogistics.in
+SMTP server: macwinlogistics[.]in
 SMTP user:   sales.del@macwinlogistics.in
 SMTP pass:   Sales@23
 SMTP port:   587
