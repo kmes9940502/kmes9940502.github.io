@@ -1,5 +1,5 @@
 ---
-title: "ImminentRAT 樣本分析(下篇)"
+title: "ImminentRAT 樣本分析(Galaxy Logger V3)"
 date: 2026-07-27
 categories: [Reverse Engineering]
 tags: [Borland Delphi, C#, Galaxy Logger, ImminentRAT, ch]
@@ -7,7 +7,7 @@ tags: [Borland Delphi, C#, Galaxy Logger, ImminentRAT, ch]
 
 
 # 概要:
-銜接上篇，接下來分析其中的三個載荷
+銜接上篇，接下來分析三個載荷的其中一個
 (三個載荷各自還有 Packer/Loader 但主要都是從 resource 解密 Payload 的流程。因篇幅關係不過多贅述)
 
 # 深度分析
@@ -88,8 +88,16 @@ http://galaxysproducts[.]com/testpanel
 
 C2: `http://ip4.telize[.]com/`
 
+## IOCs
+### C2 Indicators
+```
+http://uploads[.]im/api?upload
+http://galaxysproducts[.]com/pws/PWS.bin
+tony@rixcsgsm[.]com
+smtp[.]rixcsgsm.com
+ftp"//ftp[.]host.com
+http://galaxysproducts[.]com/testpanel
+ip4[.]telize.com
+```
 
-
-
-# 施工中，放個施工排在這裡
-![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/under_construction.png)
+**下篇分析另一個 Payload**
