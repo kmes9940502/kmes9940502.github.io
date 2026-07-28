@@ -66,7 +66,7 @@ Process Hollowing的證據
 
 ### 解密
 
-解密 Script 放在 [這裡]()，找個Online C# compiler 就可以跑。
+解密 Script 放在 [這裡](https://github.com/kmes9940502/malware-detection-rules/blob/main/malware/Galaxy_Logger_V3/scripts/decrypter.cs)，找個Online C# compiler 就可以跑。
 各類金鑰、C2 indicator都放在 `Token: 0x04000003` 附近
 ![alt text](../assets/img/posts/2026-07-27-ImminentRAT-Part2/Snipaste_2026-07-27_04-15-34.png)
 
