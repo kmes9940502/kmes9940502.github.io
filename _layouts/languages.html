@@ -1,0 +1,25 @@
+---
+layout: page
+---
+
+{% for language in site.multilingual.languages %}
+  {% assign language_posts = site.posts | where: 'lang', language.code %}
+  {% if language_posts.size > 0 %}
+    <section class="mb-5" aria-labelledby="language-{{ language.code | slugify }}">
+      <h2 id="language-{{ language.code | slugify }}" class="d-flex align-items-baseline gap-2">
+        {{ language.label }}
+        <span class="lead text-muted">{{ language_posts.size }}</span>
+      </h2>
+
+      <ul class="content ps-0">
+        {% for post in language_posts %}
+          <li class="d-flex justify-content-between px-md-3">
+            <a href="{{ post.url | relative_url }}" hreflang="{{ language.code }}">{{ post.title }}</a>
+            <span class="dash flex-grow-1"></span>
+            {% include datetime.html date=post.date class='text-muted small text-nowrap' lang=language.code %}
+          </li>
+        {% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+{% endfor %}

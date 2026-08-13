@@ -8,6 +8,17 @@ theme: jekyll-theme-chirpy
 # otherwise, the layout language will use the default value of 'en'.
 lang: en
 
+# Treat translated posts as variants of the same article.
+multilingual:
+  default_lang: en
+  languages:
+    - code: en
+      label: English
+      short_label: EN
+    - code: zh-TW
+      label: 繁體中文
+      short_label: 中文
+
 # Change to your timezone › https://zones.arilyn.cc
 timezone:
 
@@ -23,7 +34,7 @@ description: >- # used by seo meta and the atom feed
 
 # Fill in the protocol & hostname for your site.
 # E.g. 'https://username.github.io', note that it does not end with a '/'.
-url: ""
+url: "https://kmes9940502.github.io"
 
 github:
   username: kmes9940502 # change to your GitHub username

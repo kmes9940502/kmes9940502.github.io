@@ -1,0 +1,27 @@
+{% assign translations = page.translations %}
+{% if translations and translations.size > 0 %}
+  {% if page.lang == 'zh-TW' %}
+    {% assign language_prompt = '提供語言：' %}
+    {% assign language_nav_label = '文章語言版本' %}
+  {% else %}
+    {% assign language_prompt = 'Available in:' %}
+    {% assign language_nav_label = 'Article languages' %}
+  {% endif %}
+
+  <nav class="d-flex flex-wrap align-items-center gap-2 mb-4" aria-label="{{ language_nav_label }}">
+    <span class="text-muted small me-1">{{ language_prompt }}</span>
+
+    {% for language in site.multilingual.languages %}
+      {% assign translation = translations | where: 'lang', language.code | first %}
+      {% if translation %}
+        {% if language.code == page.lang %}
+          <span class="btn btn-sm btn-primary active" aria-current="page">{{ language.label }}</span>
+        {% else %}
+          <a class="btn btn-sm btn-outline-primary" href="{{ translation.url | relative_url }}" hreflang="{{ language.code }}">
+            {{- language.label -}}
+          </a>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </nav>
+{% endif %}

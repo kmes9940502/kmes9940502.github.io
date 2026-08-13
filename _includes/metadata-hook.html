@@ -1,0 +1,7 @@
+<!-- Alternate language versions for translated posts. -->
+{% if page.collection == 'posts' and page.translations %}
+  {% for translation in page.translations %}
+    <link rel="alternate" hreflang="{{ translation.lang }}" href="{{ translation.url | absolute_url }}">
+  {% endfor %}
+  <link rel="alternate" hreflang="x-default" href="{{ page.translation_representative_url | absolute_url }}">
+{% endif %}

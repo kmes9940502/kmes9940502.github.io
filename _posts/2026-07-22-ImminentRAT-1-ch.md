@@ -1,8 +1,10 @@
 ---
 title: "ImminentRAT 樣本分析(上篇)"
 date: 2026-07-22
+lang: zh-TW
+translation_key: imminentrat-part-1
 categories: [Reverse Engineering]
-tags: [Borland Delphi, ImminentRAT, ch]
+tags: [Borland Delphi, ImminentRAT]
 ---
 
 

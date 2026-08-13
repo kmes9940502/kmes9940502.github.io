@@ -33,6 +33,27 @@ This repository is automatically updated with new releases from the theme reposi
 
 This work is published under [MIT][mit] License.
 
+## Multilingual posts
+
+Every post must declare a supported language and a stable translation key, even
+if only one language is currently available:
+
+```yaml
+lang: zh-TW
+translation_key: stable-topic-name
+```
+
+Supported language codes are `en` and `zh-TW`. To add a translation, create a
+new post with the translated title and content, change `lang`, and reuse the
+same `translation_key`. Do not add language names to `tags`, set `hidden`, or
+manually maintain links between versions. The multilingual build plugin handles
+article pairing, aggregate-page visibility, the language switcher, and
+`hreflang` metadata automatically.
+
+Recommended filenames for new posts are `YYYY-MM-DD-slug-en.md` and
+`YYYY-MM-DD-slug-zh-tw.md`. Existing files keep their current names so their
+URLs remain stable.
+
 [gem]: https://rubygems.org/gems/jekyll-theme-chirpy
 [chirpy]: https://github.com/cotes2020/jekyll-theme-chirpy/
 [CD]: https://en.wikipedia.org/wiki/Continuous_deployment
