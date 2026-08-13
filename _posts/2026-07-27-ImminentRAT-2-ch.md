@@ -1,7 +1,7 @@
 ---
 title: "ImminentRAT 樣本分析(Galaxy Logger V3)"
 date: 2026-07-27
-lang: zh-TW
+content_lang: zh-TW
 translation_key: imminentrat-part-2
 categories: [Reverse Engineering]
 tags: [Borland Delphi, C#, Galaxy Logger, ImminentRAT]

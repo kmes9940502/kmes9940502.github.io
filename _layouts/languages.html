@@ -3,7 +3,7 @@ layout: page
 ---
 
 {% for language in site.multilingual.languages %}
-  {% assign language_posts = site.posts | where: 'lang', language.code %}
+  {% assign language_posts = site.posts | where: 'content_lang', language.code %}
   {% if language_posts.size > 0 %}
     <section class="mb-5" aria-labelledby="language-{{ language.code | slugify }}">
       <h2 id="language-{{ language.code | slugify }}" class="d-flex align-items-baseline gap-2">

@@ -1,7 +1,7 @@
 ---
 title: "In-Depth Analysis of the HawkEye Keylogger"
 date: 2026-06-02
-lang: en
+content_lang: en
 translation_key: hawkeye-keylogger
 categories: [Reverse Engineering]
 tags: [C#, AutoIt, yara, HawkEye]

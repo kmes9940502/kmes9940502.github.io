@@ -29,20 +29,21 @@
 每篇文章的 front matter 新增兩個欄位：
 
 ```yaml
-lang: en
+content_lang: en
 translation_key: hawkeye-keylogger
 ```
 
 中文版使用：
 
 ```yaml
-lang: zh-TW
+content_lang: zh-TW
 translation_key: hawkeye-keylogger
 ```
 
 規則：
 
-- `lang` 目前只允許 `en` 或 `zh-TW`，不再使用非標準的 `ch`。
+- `content_lang` 目前只允許 `en` 或 `zh-TW`，不再使用非標準的 `ch`。
+- 文章不要設定 `lang`；Chirpy 會將它解讀成整個頁面的介面語言。網站介面固定沿用全站 `lang: en`，只有正文依 `content_lang` 標記語言。
 - `translation_key` 是文章內容的穩定 ID，不包含日期、語言或副檔名。
 - 同一篇文章的不同語言版本必須使用相同的 `translation_key`。
 - 即使文章目前只有一種語言，也應填寫 `translation_key`；日後新增翻譯時只要沿用它。
@@ -79,7 +80,7 @@ multilingual:
 
 同時完成以下小幅調整：
 
-- 保留全站 `lang: en`，作為介面與沒有指定語言之頁面的 fallback。
+- 保留全站 `lang: en` 作為所有頁面的介面語言；文章只用 `content_lang` 描述正文，不切換 Chirpy 介面。
 - 將 `url` 設為正式站點 `https://kmes9940502.github.io`，讓 canonical 與 `hreflang` 產生絕對網址。
 - 將 Gemfile 的 Chirpy 約束從 `~> 7.5` 收窄為 `~> 7.5.0`。本方案會對少數彙整 layout 做極小覆寫，限制 minor version 可避免 CI 在未審查時自動換成不相容的 layout。日後升級 Chirpy 時再人工比對這些覆寫。
 - 保留 posts 的預設 `post` layout。Chirpy 會依 `page.layout == 'post'` 決定是否載入文章專用 CSS/JS，因此不使用會改變該值的 nested layout；改由 Jekyll render hook 暫時在正文前加入切換器，render 後立即還原原始 content。
@@ -90,7 +91,7 @@ multilingual:
 
 處理流程：
 
-1. 驗證每篇文章都有合法的 `lang` 與 `translation_key`。
+1. 驗證每篇文章都有合法的 `content_lang` 與 `translation_key`。
 2. 依 `translation_key` 分組。
 3. 拒絕同一組內重複的語言，因為這會造成語言切換連結不明確。
 4. 將同組文章依 `_config.yml` 的語言順序排列，寫入各文章的 `translations` metadata，供 Liquid template 使用。
@@ -102,7 +103,7 @@ multilingual:
 
 錯誤策略：
 
-- 缺少 `lang`、缺少 `translation_key`、未知語言，或同一組有重複語言時，直接讓 build 失敗並顯示包含檔名的清楚訊息。
+- 文章設定了 page-level `lang`、缺少 `content_lang`、缺少 `translation_key`、未知語言，或同一組有重複語言時，直接讓 build 失敗並顯示包含檔名的清楚訊息。
 - 某個翻譯不存在不是錯誤，也不應產生 warning。
 
 ## 彙整頁面的行為
@@ -126,7 +127,7 @@ Archives、單一 Category 與單一 Tag 頁面若沒有套用 `hidden` 過濾�
 
 ## 文章頁語言切換器
 
-新增 `_includes/language-switcher.html`。`_plugins/multilingual-posts.rb` 會在單篇文章的 `pre_render` 階段暫時把 include 放到正文之前，並於 `post_render` 還原原始 content。這樣不必覆寫 Chirpy 的完整 post layout，也不會讓語言切換器文字進入首頁摘要。
+新增 `_includes/language-switcher.html`。`_plugins/multilingual-posts.rb` 會在單篇文章的 `pre_render` 階段暫時把 include 放到正文之前，並依 `content_lang` 產生帶有正確 `lang` attribute 的正文容器，再於 `post_render` 還原原始 content。這樣不必覆寫 Chirpy 的完整 post layout、不會讓語言切換器文字進入首頁摘要，也不會改變網站介面語言。
 
 切換器規格：
 
@@ -173,7 +174,7 @@ Archives、單一 Category 與單一 Tag 頁面若沒有套用 `hidden` 過濾�
 - 單語文章只輸出自身語言與指向自身的 `x-default`。
 - URL 必須是絕對網址，且尊重 `site.baseurl`。
 - 不把中文版 canonical 到英文版，也不把英文版 canonical 到中文版；每個版本保留 Chirpy/Jekyll SEO Tag 產生的 self-canonical。
-- 確認輸出的 `<html lang>` 使用文章的 `page.lang`；Chirpy 7.5 原生 layout 已支援此行為，因此不覆寫。
+- 頁面層級的 `<html lang>` 固定沿用全站 `en`，使 Chirpy 導覽及其他介面保持英文；文章正文另以 `<div lang="...">` 標記實際內容語言。
 - metadata hook 是唯一的 `hreflang` 輸出位置，避免重複輸出。
 
 ## 新增文章的日常流程
@@ -186,7 +187,7 @@ Archives、單一 Category 與單一 Tag 頁面若沒有套用 `hidden` 過濾�
 ---
 title: "文章標題"
 date: 2026-08-13
-lang: zh-TW
+content_lang: zh-TW
 translation_key: stable-topic-name
 categories: [Reverse Engineering]
 tags: [Malware]
@@ -196,7 +197,7 @@ tags: [Malware]
 日後補翻譯：
 
 1. 複製文章成另一個語言檔案。
-2. 修改 `title`、`lang` 與正文。
+2. 修改 `title`、`content_lang` 與正文。
 3. 保留相同的 `translation_key`。
 4. 不設定 `hidden`，不填另一篇的 URL，也不修改任何 data file。
 
@@ -208,7 +209,7 @@ tags: [Malware]
 
 - 修改 `_config.yml`
 - 修改 `Gemfile`
-- 修改現有五篇 `_posts/*.md` 的 front matter
+- 修改現有五篇 `_posts/*.md` 的 `content_lang` 與其他 front matter
 - 新增 `_plugins/multilingual-posts.rb`
 - 新增 `_includes/language-switcher.html`
 - 新增 `_includes/metadata-hook.html`
@@ -235,7 +236,7 @@ tags: [Malware]
 
 1. 確認 Chirpy 7.5 實際 layout 與 `hidden` 行為，並將 Gemfile 限制在相容版本。
 2. 加入 `_config.yml` 的多語設定及正式 `url`。
-3. 更新五篇文章的 `lang`、`translation_key` 與語言 tags。
+3. 更新五篇文章的 `content_lang`、`translation_key` 與語言 tags。
 4. 實作並測試 multilingual plugin 的驗證、配對與代表版本，並透過 metadata hook 加入 SEO alternate links。
 5. 透過 render hook 加入語言切換器，並保留原生 post layout。
 6. 加入 Languages tab。
@@ -254,12 +255,12 @@ tags: [Malware]
 5. Languages 頁英文區列出兩篇現有英文文章，繁中區列出三篇現有中文文章。
 6. HawkEye 與 ImminentRAT Part 1 的中英文文章可互相切換。
 7. ImminentRAT Part 2 顯示只有繁中可用，且沒有死連結或虛構的英文網址。
-8. 每篇文章的 `<html lang>` 與 front matter 相同。
+8. 所有頁面的網站介面與 `<html lang>` 保持英文；中文文章正文容器輸出 `lang="zh-TW"`，英文正文輸出 `lang="en"`。
 9. 雙語文章輸出兩個語言的 `hreflang` 及正確的 `x-default`；單語文章只輸出實際存在的語言。
 10. 每個語言版本的 canonical 指向自己。
 11. 現有文章 URL 全部維持可訪問，不因本次修改產生 redirect requirement。
 12. 暫時把一篇測試文章設為只有英文或只有中文時，build 仍成功且彙整頁仍會顯示它。
-13. 測試缺少 `lang`、缺少 `translation_key` 與重複 `(translation_key, lang)` 時，build 會給出含檔名的明確錯誤。
+13. 測試誤用 page-level `lang`、缺少 `content_lang`、缺少 `translation_key` 與重複 `(translation_key, content_lang)` 時，build 會給出含檔名的明確錯誤。
 
 如果本機仍沒有 Ruby/Bundler，應完成可進行的靜態檢查，並以 GitHub Actions 的 build 與 htmlproofer 作為最終驗證；不可宣稱未實際執行的測試已通過。
 
@@ -270,6 +271,6 @@ tags: [Malware]
 - 雙語內容在一般彙整頁只顯示一次。
 - 單語文章不會消失。
 - 每篇文章能正確顯示目前可用的語言。
-- 新增翻譯只需要設定 `lang` 與共用 `translation_key`。
+- 新增翻譯只需要設定 `content_lang` 與共用 `translation_key`，網站介面語言不受影響。
 - 不破壞舊網址。
 - 沒有用大規模 fork Chirpy layout 的方式完成。

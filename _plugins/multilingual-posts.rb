@@ -46,18 +46,19 @@ module MultilingualPosts
 
     posts.each do |post|
       path = post.relative_path || post.path
-      lang = post.data['lang'].to_s.strip
+      lang = post.data['content_lang'].to_s.strip
       translation_key = post.data['translation_key'].to_s.strip
 
-      errors << "#{path}: missing `lang`" if lang.empty?
-      errors << "#{path}: unknown `lang` #{lang.inspect}" unless lang.empty? || language_codes.include?(lang)
+      errors << "#{path}: remove post-level `lang`; use `content_lang` instead" if post.data.key?('lang')
+      errors << "#{path}: missing `content_lang`" if lang.empty?
+      errors << "#{path}: unknown `content_lang` #{lang.inspect}" unless lang.empty? || language_codes.include?(lang)
       errors << "#{path}: missing `translation_key`" if translation_key.empty?
 
       groups[translation_key] << post unless lang.empty? || translation_key.empty? || !language_codes.include?(lang)
     end
 
     groups.each do |translation_key, group|
-      group.group_by { |post| post.data['lang'] }.each do |lang, duplicates|
+      group.group_by { |post| post.data['content_lang'] }.each do |lang, duplicates|
         next if duplicates.length == 1
 
         paths = duplicates.map { |post| post.relative_path || post.path }.join(', ')
@@ -71,17 +72,17 @@ module MultilingualPosts
 
   def configure_group(posts, default_lang, language_order)
     ordered = posts.sort_by do |post|
-      [language_order.fetch(post.data['lang']), post.date, post.relative_path.to_s]
+      [language_order.fetch(post.data['content_lang']), post.date, post.relative_path.to_s]
     end
 
     visible = ordered.reject { |post| post.data['hidden'] == true }
     candidates = visible.empty? ? ordered : visible
-    representative = candidates.find { |post| post.data['lang'] == default_lang } || candidates.first
+    representative = candidates.find { |post| post.data['content_lang'] == default_lang } || candidates.first
     group_pinned = visible.any? { |post| post.data['pin'] == true }
 
     translations = ordered.map do |post|
       {
-        'lang' => post.data['lang'],
+        'lang' => post.data['content_lang'],
         'title' => post.data['title'],
         'url' => post.url
       }
@@ -133,7 +134,8 @@ Jekyll::Hooks.register :posts, :pre_render do |post, _payload|
   next unless post.data['translations']
 
   post.instance_variable_set(:@multilingual_original_content, post.content)
-  post.content = "#{MultilingualPosts::SWITCHER_INCLUDE}\n\n#{post.content}"
+  content_lang = post.data['content_lang']
+  post.content = "#{MultilingualPosts::SWITCHER_INCLUDE}\n\n<div lang=\"#{content_lang}\" markdown=\"1\">\n\n#{post.content}\n\n</div>"
 end
 
 Jekyll::Hooks.register :posts, :post_render do |post|
