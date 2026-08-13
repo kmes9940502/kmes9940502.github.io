@@ -6,10 +6,7 @@ layout: page
   {% assign language_posts = site.posts | where: 'content_lang', language.code %}
   {% if language_posts.size > 0 %}
     <section class="mb-5" aria-labelledby="language-{{ language.code | slugify }}">
-      <h2 id="language-{{ language.code | slugify }}" class="d-flex align-items-baseline gap-2">
-        {{ language.label }}
-        <span class="lead text-muted">{{ language_posts.size }}</span>
-      </h2>
+      <h2 id="language-{{ language.code | slugify }}">{{ language.label }}</h2>
 
       <ul class="content ps-0">
         {% for post in language_posts %}
